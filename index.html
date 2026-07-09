@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>FZR Division — Safety Compliance Register</title>
+<title>FZR Division — JPO Safety Circulars Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -92,7 +92,7 @@
   }
   .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--clear);box-shadow:0 0 0 3px rgba(31,122,77,0.14);}
   h1{
-    font-family:'Merriweather','Noto Sans Devanagari',Georgia,serif;
+    font-family:'Oswald', sans-serif;
     font-weight:900;
     font-size:clamp(27px,3vw,40px);
     margin:0 0 6px;
@@ -215,7 +215,7 @@
   .stat-card::before{
     content:"";position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--signal, var(--steel));
   }
-  .stat-card .num{font-family:'Public Sans',Arial,sans-serif;font-size:31px;font-weight:700;line-height:1;color:var(--header);}
+  .stat-card .num{font-family:'Public Sans',Arial,sans-serif;font-size:31px;font-weight:900;line-height:1;color:var(--header);}
   .stat-card .lbl{margin-top:6px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;}
 
   /* tabs */
@@ -380,28 +380,28 @@
 <header>
   <div class="masthead">
     <div class="brand-block">
-      <div class="eyebrow"><span class="dot"></span> NORTHERN RAILWAY ? FIROZPUR (FZR) DIVISION</div>
-      <h1>Safety Compliance Register</h1>
+      <div class="eyebrow"><span class="dot"></span> NORTHERN RAILWAY ↗ FIROZPUR (FZR) DIVISION</div>
+      <h1>JPO Safety Circulars Dashboard</h1>
       <p class="sub">A consolidated, searchable index of Joint Procedure Orders, operating safety circulars &amp; bulletins, safety drives, rule books, station working records and important safety letters currently in force.</p>
       <div class="header-facts" aria-label="Register highlights">
-        <span class="fact-chip">Live register</span>
+        <span class="fact-chip">Live data</span>
         <span class="fact-chip">PDF links enabled</span>
         <span class="fact-chip">Searchable records</span>
       </div>
     </div>
 
     <div class="command-panel" aria-label="Register controls">
-      <div class="panel-label">Register Desk</div>
+      <div class="panel-label">Search Bar</div>
       <div class="searchbar">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#8a95a5" stroke-width="2"/><path d="M21 21L16.65 16.65" stroke="#8a95a5" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#8a95a5" stroke-width="2"/><path d="M21 21L16.65 16.65" stroke="#8a95a5" stroke-width="2" stroke-linecap="round"/></svg>
         <input id="globalSearch" type="text" placeholder="Search JPO, circular, drive, station or letter..." autocomplete="off">
         <span class="clear-btn" id="clearBtn">CLEAR X</span>
       </div>
-      <p class="link-note">Underlined entries with ? open the source PDF or Drive document.</p>
+
       <div id="syncBar">
         <span id="syncStatusText">Loading live data?</span>
         <div class="panel-actions">
-          <button id="refreshBtn">? Refresh now</button>
+          <button id="refreshBtn">↻ Refresh now</button>
           <span class="visitor-pill">Visitors <strong id="visitorCount">0</strong></span>
         </div>
       </div>
