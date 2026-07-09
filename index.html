@@ -399,10 +399,11 @@
       </div>
 
       <div id="syncBar">
-        <span id="syncStatusText">Loading live data?</span>
+          <span id="syncStatusText">Loading live data?</span>
         <div class="panel-actions">
-          <button id="refreshBtn">↻ Refresh now</button>
+          <button id="refreshBtn">? Refresh now</button>
           <span class="visitor-pill">Visitors <strong id="visitorCount">0</strong></span>
+          <span class="visitor-pill">Today <strong id="visitorCount">0</strong></span>
         </div>
       </div>
     </div>
@@ -909,10 +910,19 @@ function updateVisitorCount(){
   const el = document.getElementById('visitorCount');
   if(!el) return;
   const key = 'fzrSafetyComplianceRegisterVisits';
+  const today = new Date().toLocaleDateString('en-CA');
+  const countKey = 'fzrSafetyComplianceRegisterVisits:' + today;
+  const countedDateKey = 'fzrSafetyComplianceRegisterLastCountedDate';
   let count = 1;
   try{
-    count = Number(localStorage.getItem(key) || '0') + 1;
+     count = Number(localStorage.getItem(key) || '0') + 1;
     localStorage.setItem(key, String(count));
+    count = Number(localStorage.getItem(countKey) || '0');
+    if(localStorage.getItem(countedDateKey) !== today){
+      count += 1;
+      localStorage.setItem(countKey, String(count));
+      localStorage.setItem(countedDateKey, today);
+    }
   }catch(e){
     count = 1;
   }
