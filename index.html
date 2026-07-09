@@ -401,9 +401,16 @@
       <div id="syncBar">
           <span id="syncStatusText">Loading live data?</span>
         <div class="panel-actions">
-          <button id="refreshBtn">? Refresh now</button>
-          <span class="visitor-pill">Visitors <strong id="visitorCount">0</strong></span>
-          <span class="visitor-pill">Today <strong id="visitorCount">0</strong></span>
+          <button id="refreshBtn">↻ Refresh now</button>
+          <span class="visitor-pill">
+👥 Visitors
+<strong id="visitorCount">0</strong>
+</span>
+
+<span class="visitor-pill">
+🕒 Updated
+<strong id="lastUpdate">--</strong>
+</span>
         </div>
       </div>
     </div>
@@ -906,29 +913,28 @@ refreshBtn.addEventListener('click', async ()=>{
   refreshBtn.textContent = '↻ Refresh now';
 });
 
-function updateVisitorCount(){
-  const el = document.getElementById('visitorCount');
-  if(!el) return;
-  const key = 'fzrSafetyComplianceRegisterVisits';
-  const today = new Date().toLocaleDateString('en-CA');
-  const countKey = 'fzrSafetyComplianceRegisterVisits:' + today;
-  const countedDateKey = 'fzrSafetyComplianceRegisterLastCountedDate';
-  let count = 1;
-  try{
-     count = Number(localStorage.getItem(key) || '0') + 1;
-    localStorage.setItem(key, String(count));
-    count = Number(localStorage.getItem(countKey) || '0');
-    if(localStorage.getItem(countedDateKey) !== today){
-      count += 1;
-      localStorage.setItem(countKey, String(count));
-      localStorage.setItem(countedDateKey, today);
-    }
-  }catch(e){
-    count = 1;
-  }
-  el.textContent = count.toLocaleString();
+async function updateVisitorCount(){
+
+const url="https://script.google.com/macros/s/AKfycbx9AeLxCNWHxmjg1XDmya2MJXaZbrPIWIpG4NBr2E9ZpY7QO-FGKzcBj3VYDx6lD1ZdOg/exec";
+
+try{
+
+const res=await fetch(url);
+
+const data=await res.json();
+
+document.getElementById("visitorCount").innerText=data.total;
+
+document.getElementById("lastUpdate").innerText=
+new Date(data.updated).toLocaleTimeString();
+
+}catch(err){
+
+console.log(err);
+
 }
 
+}
 // ---------- initial load ----------
 (async function init(){
   updateVisitorCount();
