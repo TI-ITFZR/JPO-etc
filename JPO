@@ -275,6 +275,8 @@ const LIVE_SOURCES = {
   "Important letter and google lin": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRN18Y0xRp8jDYFOekye1E0rDz2mhTEMUOdfjiVNxKLgafie4HVA-PwvGCNIM67ZxnjMBOJGS7M4pA4/pub?gid=333679553&single=true&output=csv"
 };
 
+const SNAPSHOT_SHEETS = JSON.parse(JSON.stringify(DATA.sheets));
+
 function parseCSV(text){
   const rows = []; let row = []; let field = ''; let inQuotes = false;
   for(let i=0;i<text.length;i++){
@@ -367,6 +369,45 @@ function blocksToSheetData(blocks){
   });
 }
 
+function normalizeKeyPart(v){
+  return String(v || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function rowKey(cells){
+  return cells.map(normalizeKeyPart).join('|');
+}
+
+function subjectDateKey(cells, headers){
+  const titleIdx = headers.findIndex(h=>!/^sr/i.test(h.trim()) && !/^(date|from|to|letter no|issued by|drive no\.?)$/i.test(h.trim()));
+  const dateIdx = headers.findIndex(h=>/^(date|from)$/i.test(h.trim()));
+  const subject = cells[titleIdx >= 0 ? titleIdx : 1];
+  const date = dateIdx >= 0 ? cells[dateIdx] : '';
+  return normalizeKeyPart(subject) + '|' + normalizeKeyPart(date);
+}
+
+function copySnapshotLinks(sheetKey, liveBlocks){
+  const snapshotBlocks = SNAPSHOT_SHEETS[sheetKey] || [];
+  const exact = new Map();
+  const subjectDate = new Map();
+
+  snapshotBlocks.forEach(block=>{
+    block.items.forEach(item=>{
+      if(!item.links || !item.links.some(Boolean)) return;
+      exact.set(rowKey(item.cells), item.links);
+      subjectDate.set(subjectDateKey(item.cells, block.headers), item.links);
+    });
+  });
+
+  liveBlocks.forEach(block=>{
+    block.items.forEach(item=>{
+      if(item.links && item.links.some(Boolean)) return;
+      const savedLinks = exact.get(rowKey(item.cells)) || subjectDate.get(subjectDateKey(item.cells, block.headers));
+      if(savedLinks) item.links = savedLinks.slice(0, item.cells.length);
+    });
+  });
+  return liveBlocks;
+}
+
 async function fetchLiveSheet(url){
   const res = await fetch(url, {cache:'no-store'});
   if(!res.ok) throw new Error('HTTP ' + res.status);
@@ -385,7 +426,7 @@ async function syncLiveData(){
   await Promise.all(entries.map(async ([key, url])=>{
     try{
       const sheetData = await fetchLiveSheet(url);
-      DATA.sheets[key] = sheetData;
+      DATA.sheets[key] = copySnapshotLinks(key, sheetData);
       syncStatus[key] = {ok:true, time:new Date()};
     }catch(e){
       syncStatus[key] = {ok:false, time:new Date(), error: e.message};
